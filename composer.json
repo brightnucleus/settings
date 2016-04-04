@@ -1,0 +1,21 @@
+{
+	"name": "brightnucleus/settings",
+	"description": "Config-driven WordPress settings.",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Alain Schlesser",
+			"email": "alain.schlesser@gmail.com"
+		}
+	],
+	"require": {
+		"brightnucleus/config": "^0.2.4",
+		"brightnucleus/exceptions": "^0.2",
+		"brightnucleus/invoker": "^0.1.6"
+	},
+	"autoload": {
+		"psr-4": {
+			"BrightNucleus\\Settings\\": "src/"
+		}
+	}
+}
