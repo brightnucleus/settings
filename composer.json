@@ -9,9 +9,9 @@
 		}
 	],
 	"require": {
-		"brightnucleus/config": ">0.2",
-		"brightnucleus/exceptions": ">0.2",
-		"brightnucleus/invoker": ">0.1"
+		"brightnucleus/config": ">=0.2",
+		"brightnucleus/exceptions": ">=0.2",
+		"brightnucleus/invoker": ">=0.1"
 	},
 	"autoload": {
 		"psr-4": {

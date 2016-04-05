@@ -4,7 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.1.2] - 2016-04-05
 ### Added
-- Update composer.lock.
+- Update Composer dependencies.
 
 ## [0.1.1] - 2016-04-04
 ### Added
