@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d14e924a2aa8e3087cf548ff80cc6e0c",
-    "content-hash": "dcb64abd2c3754a699f70d577b73be17",
+    "hash": "98c8343bb321efaebf718dfaf5af2478",
+    "content-hash": "d9402f5fbd5e330ab7864aea0f737de8",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -62,16 +62,16 @@
         },
         {
             "name": "brightnucleus/config",
-            "version": "v0.2.8",
+            "version": "v0.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/brightnucleus/config.git",
-                "reference": "9a486a81e89eed0f9afd78e8c0ee486ca6fdbfb7"
+                "reference": "292ab77bff4ac24a4f9eef1d4e92595d66c6de6b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brightnucleus/config/zipball/9a486a81e89eed0f9afd78e8c0ee486ca6fdbfb7",
-                "reference": "9a486a81e89eed0f9afd78e8c0ee486ca6fdbfb7",
+                "url": "https://api.github.com/repos/brightnucleus/config/zipball/292ab77bff4ac24a4f9eef1d4e92595d66c6de6b",
+                "reference": "292ab77bff4ac24a4f9eef1d4e92595d66c6de6b",
                 "shasum": ""
             },
             "require": {
@@ -101,7 +101,7 @@
                 }
             ],
             "description": "Minimal, reusable Config component.",
-            "time": "2016-03-28 05:48:04"
+            "time": "2016-04-04 17:42:53"
         },
         {
             "name": "brightnucleus/exceptions",
