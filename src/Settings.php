@@ -13,6 +13,7 @@ namespace BrightNucleus\Settings;
 
 use BrightNucleus\Config\ConfigInterface;
 use BrightNucleus\Config\ConfigTrait;
+use BrightNucleus\Dependency\DependencyManager;
 use BrightNucleus\Exception\DomainException;
 use BrightNucleus\Exception\InvalidArgumentException;
 use BrightNucleus\Invoker\FunctionInvokerTrait;
@@ -40,15 +41,30 @@ class Settings {
 	protected $page_hooks = array();
 
 	/**
+	 * Dependency Manager that manages enqueueing of dependencies.
+	 *
+	 * @since 0.1.3
+	 *
+	 * @var DependencyManager
+	 */
+	protected $dependency_manager;
+
+	/**
 	 * Instantiate Settings object.
 	 *
 	 * @since 0.1.0
 	 *
-	 * @param ConfigInterface $config Config object that contains Settings
-	 *                                configuration.
+	 * @param ConfigInterface   $config             Config object that contains
+	 *                                              Settings configuration.
+	 * @param DependencyManager $dependency_manager Dependency manager that
+	 *                                              handles enqueueing.
 	 */
-	public function __construct( ConfigInterface $config ) {
+	public function __construct(
+		ConfigInterface $config,
+		DependencyManager $dependency_manager = null
+	) {
 		$this->processConfig( $config );
+		$this->dependency_manager = $dependency_manager;
 	}
 
 	/**
@@ -71,18 +87,30 @@ class Settings {
 		$pages = [ 'menu_page', 'submenu_page' ];
 		foreach ( $pages as $page ) {
 			if ( $this->hasConfigKey( "${page}s" ) ) {
-				array_walk( $this->getConfigKey( "${page}s" ), [
-					$this,
-					'add_page',
-				], "add_${page}" );
+				$pages = $this->getConfigKey( "${page}s" );
+				array_walk( $pages, [ $this, 'add_page' ], "add_${page}" );
 			}
+		}
+	}
+
+	/**
+	 * Initialize the settings page.
+	 *
+	 * @since 0.1.0
+	 */
+	public function init_settings() {
+		if ( $this->hasConfigKey( 'settings' ) ) {
+			array_walk(
+				$this->getConfigKey( 'settings' ),
+				[ $this, 'add_setting' ]
+			);
 		}
 	}
 
 	/**
 	 * Add a single page to the WordPress admin backend.
 	 *
-	 * @since  0.1.0
+	 * @since 0.1.0
 	 *
 	 * @param array  $data              Arguments for page creation function.
 	 * @param string $key               Current page name.
@@ -94,7 +122,7 @@ class Settings {
 	 * @throws DomainException If the page view file does not exist.
 	 *
 	 */
-	public function add_page( $data, $key, $function ) {
+	protected function add_page( $data, $key, $function ) {
 		// Skip page creation if it already exists. This allows reuse of 1 page
 		// for several plugins.
 		if ( empty( $GLOBALS['admin_page_hooks'][ $data['menu_slug'] ] ) ) {
@@ -108,23 +136,15 @@ class Settings {
 					}
 					include( $data['view'] );
 				}
+				if ( array_key_exists( 'dependencies', $data ) ) {
+					array_walk(
+						$data['dependencies'],
+						[ $this, 'enqueue_dependency' ]
+					);
+				}
 			};
 			$page_hook          = $this->invokeFunction( $function, $data );
 			$this->page_hooks[] = $page_hook;
-		}
-	}
-
-	/**
-	 * Initialize the settings page.
-	 *
-	 * @since    0.1.0
-	 */
-	public function init_settings() {
-		if ( $this->hasConfigKey( 'settings' ) ) {
-			array_walk(
-				$this->getConfigKey( 'settings' ),
-				[ $this, 'add_setting' ]
-			);
 		}
 	}
 
@@ -137,7 +157,7 @@ class Settings {
 	 *                             function.
 	 * @param string $setting_name Name of the option group.
 	 */
-	public function add_setting( $setting_data, $setting_name ) {
+	protected function add_setting( $setting_data, $setting_name ) {
 		register_setting( $setting_data['option_group'], $setting_name,
 			$setting_data['sanitize_callback'] );
 
@@ -161,7 +181,7 @@ class Settings {
 	 * @param string $args         Additional arguments to pass on.
 	 * @throws DomainException If the section view file does not exist.
 	 */
-	public function add_section( $section_data, $section_name, $args ) {
+	protected function add_section( $section_data, $section_name, $args ) {
 		add_settings_section(
 			$section_name,
 			$section_data['title'],
@@ -195,7 +215,7 @@ class Settings {
 	 * @param array  $args       Contains both page and section name.
 	 * @throws DomainException If the field view file does not exist.
 	 */
-	public function add_field( $field_data, $field_name, $args ) {
+	protected function add_field( $field_data, $field_name, $args ) {
 		add_settings_field(
 			$field_name,
 			$field_data['title'],
@@ -215,5 +235,19 @@ class Settings {
 			$args['page'],
 			$args['section']
 		);
+	}
+
+	/**
+	 * Enqueue dependencies of a page.
+	 *
+	 * @since 0.1.3
+	 *
+	 * @param string $handle Handle of a dependency to enqueue.
+	 */
+	protected function enqueue_dependency( $handle ) {
+		if ( null === $this->dependency_manager ) {
+			return;
+		}
+		$this->dependency_manager->enqueue_handle( $handle );
 	}
 }
