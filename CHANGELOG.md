@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.1.4] - 2016-05-14
+### Fixed
+- Bug fixes submitted by @GaryJones.
+
 ## [0.1.3] - 2016-04-05
 ### Added
 - Register dependencies if dependency manager is available.
@@ -18,6 +22,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Initial release to GitHub.
 
+[0.1.4]: https://github.com/brightnucleus/settings/compare/v0.1.3...v0.1.4
 [0.1.3]: https://github.com/brightnucleus/settings/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/brightnucleus/settings/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/brightnucleus/settings/compare/v0.1.0...v0.1.1
