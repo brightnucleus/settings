@@ -100,8 +100,9 @@ class Settings {
 	 */
 	public function init_settings() {
 		if ( $this->hasConfigKey( 'settings' ) ) {
+			$settings = $this->getConfigKey( 'settings' );
 			array_walk(
-				$this->getConfigKey( 'settings' ),
+				$settings,
 				[ $this, 'add_setting' ]
 			);
 		}
@@ -187,7 +188,7 @@ class Settings {
 			$section_data['title'],
 			function () use ( $section_data ) {
 				if ( array_key_exists( 'view', $section_data ) ) {
-					if ( ! file_exists( $section_data ) ) {
+					if ( ! file_exists( $section_data['view'] ) ) {
 						throw new DomainException( sprintf(
 							_( 'Invalid settings section view: %1$s' ),
 							$section_data['view']
@@ -223,7 +224,7 @@ class Settings {
 				// Fetch $options to pass into view.
 				$options = get_option( $args['setting_name'] );
 				if ( array_key_exists( 'view', $field_data ) ) {
-					if ( ! file_exists( $field_data ) ) {
+					if ( ! file_exists( $field_data['view'] ) ) {
 						throw new DomainException( sprintf(
 							_( 'Invalid settings field view: %1$s' ),
 							$field_data['view']
