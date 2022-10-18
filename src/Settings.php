@@ -127,7 +127,12 @@ class Settings {
 		// Skip page creation if it already exists. This allows reuse of 1 page
 		// for several plugins.
 		if ( empty( $GLOBALS['admin_page_hooks'][ $data['menu_slug'] ] ) ) {
-			$data['function']   = function () use ( $data ) {
+			// @link https://github.com/WordPress/WordPress/commit/90cbd98c6bb448f56178fec68f57ab74d9e5bdf8
+			$callbackArgumentName = version_compare(get_bloginfo('version'), '6.0', '>=')
+				? 'callback'
+				: 'function';
+
+			$data[$callbackArgumentName]   = function () use ( $data ) {
 				if ( array_key_exists( 'view', $data ) ) {
 					if ( ! file_exists( $data['view'] ) ) {
 						throw new DomainException( sprintf(
