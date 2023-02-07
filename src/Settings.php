@@ -127,7 +127,7 @@ class Settings {
 		// Skip page creation if it already exists. This allows reuse of 1 page
 		// for several plugins.
 		if ( empty( $GLOBALS['admin_page_hooks'][ $data['menu_slug'] ] ) ) {
-			$data['function']   = function () use ( $data ) {
+			$data[ $this->get_argument_name() ] = function () use ( $data ) {
 				if ( array_key_exists( 'view', $data ) ) {
 					if ( ! file_exists( $data['view'] ) ) {
 						throw new DomainException( sprintf(
@@ -144,6 +144,7 @@ class Settings {
 					);
 				}
 			};
+
 			$page_hook          = $this->invokeFunction( $function, $data );
 			$this->page_hooks[] = $page_hook;
 		}
@@ -250,5 +251,32 @@ class Settings {
 			return;
 		}
 		$this->dependency_manager->enqueue_handle( $handle );
+	}
+
+	/**
+	 * Get the name of the argument that is used to pass the callback
+	 * function to either add_menu_page() or add_submenu_page().
+	 *
+	 * This is done because WordPress has changed the name of the argument
+	 * starting with version 6.0 onwards, for PHP 8 compatibility.
+	 *
+	 * @see https://github.com/WordPress/WordPress/commit/90cbd98c6bb448f56178fec68f57ab74d9e5bdf8
+	 *
+	 * We're caching the value statically for performance reasons.
+	 *
+	 * @since 0.1.5
+	 *
+	 * @return string Name of the argument.
+	 */
+	protected function get_argument_name() {
+		static $callback_argument_name = '';
+
+		if ( empty ( $callback_argument_name ) ) {
+			$callback_argument_name = version_compare( get_bloginfo( 'version' ), '6.0', '>=' )
+				? 'callback'
+				: 'function';
+		}
+
+		return $callback_argument_name;
 	}
 }
