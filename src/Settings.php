@@ -86,9 +86,9 @@ class Settings {
 	public function add_pages() {
 		$pages = [ 'menu_page', 'submenu_page' ];
 		foreach ( $pages as $page ) {
-			if ( $this->hasConfigKey( "${page}s" ) ) {
-				$pages = $this->getConfigKey( "${page}s" );
-				array_walk( $pages, [ $this, 'add_page' ], "add_${page}" );
+			if ( $this->hasConfigKey( "{$page}s" ) ) {
+				$pages = $this->getConfigKey( "{$page}s" );
+				array_walk( $pages, [ $this, 'add_page' ], "add_{$page}" );
 			}
 		}
 	}
